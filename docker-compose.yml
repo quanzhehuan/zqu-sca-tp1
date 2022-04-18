@@ -1,14 +1,53 @@
 version: '0.1'
 services:
   back:
-    image: 'quanzh/zqu_back:v0.1'
-    container_name: back
+    image: 'quanzh/zqu_back:vf'
+    #container_name: back
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 60s
+      resources:
+        limits:
+          cpus: "0.50"
+          memory: 128M
     ports:
       - "8080:8080"
+    healthcheck:
+      test: curl --fail http://localhost:8080/ || exit 1
+      interval: 60s
+      retries: 3
+      start_period: 20s
+      timeout: 10s
+    volumes:
+      - ./log/back:/log
+
   front:
-    image: 'quanzh/zqu_front:v0.2'
-    container_name: front
+    image: 'quanzh/zqu_front:vf'
+    #container_name: front
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+        window: 60s
+      resources:
+        limits:
+          cpus: "0.50"
+          memory: 128M
     ports:
       - "8081:8081"
     depends_on:
       - back
+    healthcheck:
+      test: curl --fail http://localhost:8081/get || exit 1
+      interval: 60s
+      retries: 3
+      start_period: 20s
+      timeout: 10s
+    volumes:
+      - ./log/front:/log
