@@ -1,0 +1,14 @@
+version: '0.1'
+services:
+  back:
+    image: 'quanzh/zqu_back:v0.1'
+    container_name: back
+    ports:
+      - "8080:8080"
+  front:
+    image: 'quanzh/zqu_front:v0.2'
+    container_name: front
+    ports:
+      - "8081:8081"
+    depends_on:
+      - back
