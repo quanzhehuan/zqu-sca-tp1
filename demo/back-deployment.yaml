@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: back-deployment
+  labels:
+    app: back
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: back
+      tier: back
+      track: daily
+  template:
+    metadata:
+      labels:
+        app: back
+        tier: back
+        track: daily
+    spec:
+      containers:
+      - name: back
+        image: "quanzh/zqu_back:vf"
+        ports:
+        - containerPort: 8080
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "250m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+          initialDelaySeconds: 3
+          periodSeconds: 3
+        readinessProbe:
+          tcpSocket:
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        env:
+          - name: app.name
+            valueFrom:
+              configMapKeyRef:
+                name: back-configmap
+                key: app_name
