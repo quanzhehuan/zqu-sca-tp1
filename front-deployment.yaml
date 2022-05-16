@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: front-deployment
+  labels:
+    app: front
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: front
+      tier: front
+      track: daily
+  template:
+    metadata:
+      labels:
+        app: front
+        tier: front
+        track: daily
+    spec:
+      containers:
+      - name: front
+        image: "quanzh/zqu_front:vf"
+        ports:
+        - containerPort: 8081
