@@ -1,4 +1,4 @@
-Minikube Dashboard to check status of Kubernetes cluster :
+#Minikube Dashboard to check status of Kubernetes cluster :
 minikube start
 minikube dashboard
 
