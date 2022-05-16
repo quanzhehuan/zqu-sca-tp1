@@ -1,29 +1,29 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: back-deployment
+  name: front-deployment
   labels:
-    app: back
+    app: front
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: back
-      tier: back
+      app: front
+      tier: front
       track: daily
   template:
     metadata:
       labels:
-        app: back
-        tier: back
+        app: front
+        tier: front
         track: daily
     spec:
       containers:
-      - name: back
-        image: "quanzh/zqu_back:vf"
+      - name: front
+        image: "quanzh/zqu_front:vf"
         ports:
-        - containerPort: 8080
-        resources:
+        - containerPort: 8081
+      resources:
           requests:
             memory: "128Mi"
             cpu: "250m"
@@ -33,18 +33,23 @@ spec:
         livenessProbe:
           httpGet:
             path: /actuator/health/liveness
-            port: 8080
+            port: 8081
           initialDelaySeconds: 3
           periodSeconds: 3
         readinessProbe:
           httpGet:
             path: /actuator/health/readiness
-            port: 8080
+            port: 8081
           initialDelaySeconds: 5
           periodSeconds: 10
         env:
           - name: app.name
             valueFrom:
               configMapKeyRef:
-                name: back-configmap
+                name: front-configmap
                 key: app_name
+          - name: app.back.url
+            valueFrom:
+              configMapKeyRef:
+                name: front-configmap
+                key: app_back_url
